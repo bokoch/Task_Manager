@@ -53,6 +53,7 @@ public class DescribeSwingTask extends SwingTaskView {
         titleTask = new JTextField();
         titleTask.setAutoscrolls(true);
         titleTask.setEditable(false);
+        titleTask.setBackground(Color.white);
         titleTask.setBounds(70,20,280,25);
         panel.add(titleTask);
 
@@ -63,6 +64,7 @@ public class DescribeSwingTask extends SwingTaskView {
 
         startTime =  new JTextField();
         startTime.setEditable(false);
+        startTime.setBackground(Color.white);
         startTime.setBounds(70,50,120,25);
         panel.add(startTime);
 
@@ -73,6 +75,7 @@ public class DescribeSwingTask extends SwingTaskView {
 
         endTime = new JTextField();
         endTime.setEditable(false);
+        endTime.setBackground(Color.white);
         endTime.setBounds(230,50,120,25);
         panel.add(endTime);
 
@@ -82,6 +85,7 @@ public class DescribeSwingTask extends SwingTaskView {
         panel.add(titleInterval);
 
         intervalTask = new JTextField();
+        intervalTask.setBackground(Color.white);
         intervalTask.setEditable(false);
         intervalTask.setBounds(70,80,280,25);
         panel.add(intervalTask);
@@ -93,6 +97,7 @@ public class DescribeSwingTask extends SwingTaskView {
 
         nextTime = new JTextField();
         nextTime.setEditable(false);
+        nextTime.setBackground(Color.white);
         nextTime.setBounds(70,110,280,25);
         panel.add(nextTime);
 
@@ -142,6 +147,8 @@ public class DescribeSwingTask extends SwingTaskView {
             startTime.setBounds(70,50,120,25);
             nextTime.setBounds(70,110,280,25);
             chkActive.setBounds(5,140,120,25);
+            closeBtn.setBounds(140,170,85,30);
+            frame.setSize(380,260);
 
             titleStart.setText("Start");
             titleEnd.setVisible(true);
@@ -156,6 +163,8 @@ public class DescribeSwingTask extends SwingTaskView {
             titleNext.setBounds(5,80,80,25);
             nextTime.setBounds(70,80,280,25);
             chkActive.setBounds(5,110,150,25);
+            closeBtn.setBounds(140,140,85,30);
+            frame.setSize(380,230);
 
             titleStart.setText("Time");
             titleEnd.setVisible(false);

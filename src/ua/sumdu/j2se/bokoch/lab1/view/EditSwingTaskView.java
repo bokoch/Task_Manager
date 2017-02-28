@@ -1,11 +1,16 @@
 package ua.sumdu.j2se.bokoch.lab1.view;
 
+import com.toedter.calendar.JDateChooser;
 import ua.sumdu.j2se.bokoch.lab1.model.TaskModel;
+import ua.sumdu.j2se.bokoch.lab1.view.timepicker.TimePicker;
 import ua.sumdu.j2se.bokoch.tasks.Task;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -47,7 +52,7 @@ public class EditSwingTaskView extends SwingTaskView {
 
         titleTask = new JTextField();
         titleTask.setAutoscrolls(true);
-        titleTask.setBounds(60,20,280,25);
+        titleTask.setBounds(60,20,230,25);
         panel.add(titleTask);
 
         titleStart = new JLabel("Start");
@@ -55,85 +60,166 @@ public class EditSwingTaskView extends SwingTaskView {
         titleStart.setBounds(15,50,80,25);
         panel.add(titleStart);
 
-        startTime =  new JSpinner(new SpinnerDateModel());
-        startTime.setEditor(new JSpinner.DateEditor(startTime, "dd.MM.yyyy HH:mm"));
-        startTime.setBounds(60,50,120,25);
+        startDate = new JDateChooser(new Date());
+        startDate.setBounds(60,50,120,25);
+        panel.add(startDate);
+
+        startTimePicker = new TimePicker();
+        startTime = new JTextField();
+        startTime.setText(startTimePicker.getTime());
+        startTime.setBounds(190, 50, 80,25);
         panel.add(startTime);
+
+        timeStartPickerBtn = new JButton("...");
+        timeStartPickerBtn.setBounds(270,50,20,25);
+        panel.add(timeStartPickerBtn);
+
+        timeStartPickerBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startTime.setText(startTimePicker.getTime());
+                int x = timeStartPickerBtn.getX() + timeStartPickerBtn.getBounds().width - startTimePicker.getBounds().width + 8;
+                int y = timeStartPickerBtn.getY() + timeStartPickerBtn.getBounds().height + startTimePicker.getBounds().height - 12;
+                startTimePicker.show(frame, x, y);
+            }
+        });
+
+        frame.addMouseListener(new MouseAdapter() {
+            public void mousePressed(final MouseEvent e) {
+                if((e.getModifiers() & e.BUTTON1_MASK) != 0) {
+                    startTimePicker.setVisible(false);
+                    startTime.setText(startTimePicker.getTime());
+
+                }
+            }
+        });
 
         titleEnd = new JLabel("End");
         titleEnd.setFont(labelFont) ;
-        titleEnd.setBounds(190,50,80,25);
+        titleEnd.setBounds(15,80,80,25);
         panel.add(titleEnd);
 
-        endTime = new JSpinner(new SpinnerDateModel());
-        endTime.setEditor(new JSpinner.DateEditor(endTime, "dd.MM.yyyy HH:mm"));
+        endDate = new JDateChooser(new Date());
+        panel.add(endDate);
+        endDate.setBounds(60,80,120,25);
+
+        endTimePicker = new TimePicker();
+
+        endTime = new JTextField();
+        endTime.setText(endTimePicker.getTime());
+        endTime.setBounds(190, 80, 80,25);
         panel.add(endTime);
-        endTime.setBounds(220,50,120,25);
+
+        timeEndPickerBtn = new JButton("...");
+        timeEndPickerBtn.setBounds(270,80,20,25);
+        panel.add(timeEndPickerBtn);
+        timeEndPickerBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                endTime.setText(endTimePicker.getTime());
+                int x = timeEndPickerBtn.getX() + timeEndPickerBtn.getBounds().width - endTimePicker.getBounds().width + 8;
+                int y = timeEndPickerBtn.getY() + timeEndPickerBtn.getBounds().height + endTimePicker.getBounds().height - 12;
+                endTimePicker.show(frame, x, y);
+            }
+        });
+
+        frame.addMouseListener(new MouseAdapter() {
+            public void mousePressed(final MouseEvent e) {
+                if((e.getModifiers() & e.BUTTON1_MASK) != 0) {
+                    endTimePicker.setVisible(false);
+                    endTime.setText(endTimePicker.getTime());
+
+                }
+            }
+        });
 
         chkActive = new JCheckBox("Active task");
         chkActive.setFont(labelFont) ;
-        chkActive.setBounds(350,80,120,25);
+        chkActive.setBounds(300,80,120,25);
         panel.add(chkActive);
 
         ButtonGroup buttonGroup = new ButtonGroup();
         rbNoRep = new JRadioButton("No Repeated");
         rbRep = new JRadioButton("Repeated");
+        rbRep.setSelected(true);
         rbNoRep.setFont(labelFont);
         rbRep.setFont(labelFont);
         buttonGroup.add(rbNoRep);
         buttonGroup.add(rbRep);
-        rbRep.setBounds(350,20,150,25);
-        rbNoRep.setBounds(350,50,150,25);
+        rbRep.setBounds(300,20,150,25);
+        rbNoRep.setBounds(300,50,150,25);
         panel.add(rbNoRep);
         panel.add(rbRep);
 
         titleInterval = new JLabel("Interval");
         titleInterval.setFont(labelFont) ;
-        titleInterval.setBounds(5,80,80,25);
+        titleInterval.setBounds(5,110,80,25);
         panel.add(titleInterval);
 
         titleDay = new JLabel("Days");
-        titleDay.setBounds(70,100,55,25);
+        titleDay.setBounds(65,130,55,25);
         panel.add(titleDay);
         titleHr = new JLabel("Hours");
-        titleHr.setBounds(140,100,55,25);
+        titleHr.setBounds(125,130,55,25);
         panel.add(titleHr);
         titleMin = new JLabel("Min");
-        titleMin.setBounds(225,100,55,25);
+        titleMin.setBounds(195,130,55,25);
         panel.add(titleMin);
         titleSec = new JLabel("Sec");
-        titleSec.setBounds(295,100,55,25);
+        titleSec.setBounds(255,130,55,25);
         panel.add(titleSec);
 
         spinDay = new JSpinner();
         JSpinner.DefaultEditor editorDay = (JSpinner.DefaultEditor) spinDay.getEditor();
         editorDay.getTextField().setEditable(false);
-        spinDay.setBounds(60,80,55,25);
+        spinDay.setBounds(60,110,45,25);
 
         spinHr = new JSpinner(new SpinnerNumberModel(0,0,23,1));
         JSpinner.DefaultEditor editorHr = (JSpinner.DefaultEditor) spinHr.getEditor();
         editorHr.getTextField().setEditable(false);
-        spinHr.setBounds(135,80,55,25);
+        spinHr.setBounds(120,110,45,25);
 
         spinMin = new JSpinner(new SpinnerNumberModel(0,0,59,1));
         JSpinner.DefaultEditor editorMin = (JSpinner.DefaultEditor) spinMin.getEditor();
         editorMin.getTextField().setEditable(false);
-        spinMin.setBounds(210,80,55,25);
+        spinMin.setBounds(185,110,45,25);
 
         spinSec = new JSpinner(new SpinnerNumberModel(0,0,59,1));
         JSpinner.DefaultEditor editorSec = (JSpinner.DefaultEditor) spinSec.getEditor();
         editorSec.getTextField().setEditable(false);
-        spinSec.setBounds(285,80,55,25);
+        spinSec.setBounds(245,110,45,25);
         panel.add(spinDay);
         panel.add(spinHr);
         panel.add(spinMin);
         panel.add(spinSec);
 
+        editBtn = new JButton(BUTTON_EDIT_TITLE);
+        editBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireAction(ACTION_EDIT);
+            }
+        });
+        editBtn.setBounds(110,170,85,30);
+        panel.add(editBtn);
+
+        cancelBtn = new JButton(BUTTON_CANCEL_TITLE);
+        cancelBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fireAction(ACTION_CLOSE);
+            }
+        });
+        cancelBtn.setBounds(210,170,85,30);
+        panel.add(cancelBtn);
+
         rbRep.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 titleStart.setText("Start");
-                startTime.setSize(120,25);
+                frame.setSize((new Dimension(430,260)));
+                editBtn.setBounds(100,170,85,30);
+                cancelBtn.setBounds(200,170,85,30);
                 setVisible(true);
             }
         });
@@ -141,34 +227,16 @@ public class EditSwingTaskView extends SwingTaskView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 titleStart.setText("Time");
-                startTime.setSize(280,25);
+                frame.setSize((new Dimension(430,180)));
+                editBtn.setBounds(100,100,85,30);
+                cancelBtn.setBounds(200,100,85,30);
                 setVisible(false);
             }
         });
 
-        JButton editBtn = new JButton(BUTTON_EDIT_TITLE);
-        editBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireAction(ACTION_EDIT);
-            }
-        });
-        editBtn.setBounds(140,130,85,30);
-        panel.add(editBtn);
-
-        JButton cancelBtn = new JButton(BUTTON_CANCEL_TITLE);
-        cancelBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fireAction(ACTION_CLOSE);
-            }
-        });
-        cancelBtn.setBounds(240,130,85,30);
-        panel.add(cancelBtn);
-
         frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.setPreferredSize((new Dimension(480,220)));
+        frame.setPreferredSize((new Dimension(430,260)));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setAlwaysOnTop(true);
@@ -179,7 +247,9 @@ public class EditSwingTaskView extends SwingTaskView {
      * @param flag
      */
     public void setVisible(boolean flag) {
+        endDate.setVisible(flag);
         endTime.setVisible(flag);
+        timeEndPickerBtn.setVisible(flag);
         titleEnd.setVisible(flag);
         spinDay.setVisible(flag);
         spinHr.setVisible(flag);
@@ -198,22 +268,31 @@ public class EditSwingTaskView extends SwingTaskView {
      */
     @Override
     public Task getTask() {
-        Task tmpTask = null;
 
-        Date start;
-        Date end;
+        Task tmpTask = null;
+        Date start = null;
+        Date end = null;
         int interval;
+        SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
         if(titleTask.getText().isEmpty())
             throw new RuntimeException("Title must be not null!");
 
         if(rbNoRep.isSelected()) {
-            start = (Date) startTime.getValue();
+            try {
+                start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             tmpTask = new Task(titleTask.getText(), start);
         }
         else if (rbRep.isSelected()) {
-            start = (Date) startTime.getValue();
-            end = (Date) endTime.getValue();
+            try {
+                start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
+                end = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             interval = (int) spinDay.getValue()*86400 + (int) spinHr.getValue()*3600 + (int) spinMin.getValue()*60 +
                     (int) spinSec.getValue();
             tmpTask = new Task(titleTask.getText(), (Date) start.clone(), (Date) end.clone(), interval);
@@ -241,15 +320,23 @@ public class EditSwingTaskView extends SwingTaskView {
      */
     private void fillFrame() {
         titleTask.setText(model.getSelTask().getTitle());
-        SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        startTime.setValue(model.getSelTask().getStartTime());
+        SimpleDateFormat smp = new SimpleDateFormat("HH:mm:ss");
+        startTime.setText(smp.format(model.getSelTask().getStartTime()));
+        startDate.setDate(model.getSelTask().getStartTime());
+        startTimePicker.setTime(model.getSelTask().getStartTime());
         chkActive.setSelected(model.getSelTask().isActive());
         if(model.getSelTask().isRepeated()) {
             rbRep.setSelected(true);
             titleStart.setText("Start");
-            startTime.setSize(120,25);
             setVisible(true);
-            endTime.setValue(model.getSelTask().getEndTime());
+            endTime.setText(smp.format(model.getSelTask().getEndTime()));
+            endDate.setDate(model.getSelTask().getEndTime());
+            endTimePicker.setTime(model.getSelTask().getEndTime());
+
+            frame.setSize((new Dimension(430,260)));
+            editBtn.setBounds(100,170,85,30);
+            cancelBtn.setBounds(200,170,85,30);
+
             int interval = model.getSelTask().getRepeatInterval();
             spinDay.setValue(interval / 86400);
             spinHr.setValue((interval % 86400) / 3600);
@@ -258,7 +345,11 @@ public class EditSwingTaskView extends SwingTaskView {
         } else {
             rbNoRep.setSelected(true);
             titleStart.setText("Time");
-            startTime.setSize(280,25);
+
+            frame.setSize((new Dimension(430,180)));
+            editBtn.setBounds(100,100,85,30);
+            cancelBtn.setBounds(200,100,85,30);
+
             setVisible(false);
             spinDay.setValue(0);
             spinHr.setValue(0);
@@ -271,7 +362,9 @@ public class EditSwingTaskView extends SwingTaskView {
     private JCheckBox chkActive;
     private JRadioButton rbNoRep, rbRep;
     private JSpinner spinDay, spinHr, spinMin, spinSec;
+    private JDateChooser endDate, startDate;
+    private TimePicker startTimePicker, endTimePicker;
+    private JButton timeEndPickerBtn, timeStartPickerBtn, editBtn, cancelBtn;
     private JLabel titleStart, titleEnd, titleInterval, titleDay, titleHr, titleMin, titleSec;
-    private JSpinner endTime, startTime;
-    private JTextField titleTask;
+    private JTextField titleTask, startTime, endTime;
 }

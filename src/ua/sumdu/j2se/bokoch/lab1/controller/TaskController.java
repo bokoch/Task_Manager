@@ -36,7 +36,7 @@ public class TaskController implements ActionListener {
             e.printStackTrace();
         }
         TaskController controller = new TaskController(new DefaultTaskModel(arr));
-        controller.createView(MainSwingTaskView.getFactory());
+         controller.createView(MainSwingTaskView.getFactory());
         controller.createView(AddSwingTaskView.getFactory());
         controller.createView(EditSwingTaskView.getFactory());
         controller.createView(DescribeSwingTask.getFactory());

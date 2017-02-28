@@ -1,12 +1,17 @@
 package ua.sumdu.j2se.bokoch.lab1.view;
 
+import com.toedter.calendar.JDateChooser;
 import ua.sumdu.j2se.bokoch.lab1.model.TaskModel;
+import ua.sumdu.j2se.bokoch.lab1.view.timepicker.TimePicker;
 import ua.sumdu.j2se.bokoch.tasks.Task;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -47,39 +52,106 @@ public class CalendarSwingView extends SwingTaskView {
 
         JLabel titleStart = new JLabel("Start");
         titleStart.setFont(labelFont);
-        titleStart.setBounds(60,130,80,25);
+        titleStart.setBounds(10,130,50,25);
         panel.add(titleStart);
 
-        startTime =  new JSpinner(new SpinnerDateModel());
-        startTime.setEditor(new JSpinner.DateEditor(startTime, "dd.MM.yyyy HH:mm"));
-        startTime.setBounds(100,130,120,25);
+        startDate =  new JDateChooser(new Date());
+        startDate.setBounds(50,130,120,25);
+        panel.add(startDate);
+
+        startTimePicker = new TimePicker();
+        startTime = new JTextField();
+        startTime.setText(startTimePicker.getTime());
+        startTime.setBounds(180, 130, 80,25);
         panel.add(startTime);
+
+        timeStartPickerBtn = new JButton("...");
+        timeStartPickerBtn.setBounds(260,130,20,25);
+        panel.add(timeStartPickerBtn);
+
+        timeStartPickerBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startTime.setText(startTimePicker.getTime());
+                int x = timeStartPickerBtn.getX() + timeStartPickerBtn.getBounds().width - startTimePicker.getBounds().width + 8;
+                int y = timeStartPickerBtn.getY() + timeStartPickerBtn.getBounds().height + startTimePicker.getBounds().height - 12;
+                startTimePicker.show(frame, x, y);
+            }
+        });
+
+        frame.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(final MouseEvent e) {
+                if((e.getModifiers() & e.BUTTON1_MASK) != 0) {
+                    startTimePicker.setVisible(false);
+                    startTime.setText(startTimePicker.getTime());
+
+                }
+            }
+        });
 
         JLabel titleEnd = new JLabel("End");
         titleEnd.setFont(labelFont) ;
-        titleEnd.setBounds(240,130,80,25);
+        titleEnd.setBounds(10,170,50,25);
         panel.add(titleEnd);
 
-        endTime = new JSpinner(new SpinnerDateModel());
-        endTime.setEditor(new JSpinner.DateEditor(endTime, "dd.MM.yyyy HH:mm"));
+        endDate = new JDateChooser(new Date(new Date().getTime() + 24*60*60));
+        panel.add(endDate);
+        endDate.setBounds(50,170,120,25);
+
+        endTimePicker = new TimePicker();
+        endTime = new JTextField();
+        endTime.setText(endTimePicker.getTime());
+        endTime.setBounds(180, 170, 80,25);
         panel.add(endTime);
-        endTime.setBounds(270,130,120,25);
+
+        timeEndPickerBtn = new JButton("...");
+        timeEndPickerBtn.setBounds(260,170,20,25);
+        panel.add(timeEndPickerBtn);
+
+        timeEndPickerBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                endTime.setText(endTimePicker.getTime());
+                int x = timeEndPickerBtn.getX() + timeEndPickerBtn.getBounds().width - endTimePicker.getBounds().width + 8;
+                int y = timeEndPickerBtn.getY() + timeEndPickerBtn.getBounds().height + endTimePicker.getBounds().height - 12;
+                endTimePicker.show(frame, x, y);
+            }
+        });
+
+        frame.addMouseListener(new MouseAdapter() {
+            public void mousePressed(final MouseEvent e) {
+                if((e.getModifiers() & e.BUTTON1_MASK) != 0) {
+                    endTimePicker.setVisible(false);
+                    endTime.setText(endTimePicker.getTime());
+
+                }
+            }
+        });
 
         list = new JList(listModel);
         list.setFocusable(false);
         JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setBounds(0,0,480,120);
+        scrollPane.setBounds(0,0,305,120);
         panel.add(scrollPane);
 
         JButton showBtn = new JButton(BUTTON_SHOW_TITLE);
+        SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         //По нажатию кнопки выводить рассписание задач по заданой дате
         showBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setList(model.getCalendarMap((Date) startTime.getValue(), (Date) endTime.getValue()));
+                Date dateFrom = null;
+                Date dateTo = null;
+                try {
+                    dateFrom = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
+                    dateTo = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+                setList(model.getCalendarMap(dateFrom, dateTo));
             }
         });
-        showBtn.setBounds(140,170,85,30);
+        showBtn.setBounds(60,210,85,30);
         panel.add(showBtn);
 
         JButton closeBtn = new JButton(BUTTON_CLOSE_TITLE);
@@ -89,16 +161,33 @@ public class CalendarSwingView extends SwingTaskView {
                 fireAction(ACTION_CLOSE);
             }
         });
-        closeBtn.setBounds(240,170,85,30);
+        closeBtn.setBounds(160,210,85,30);
         panel.add(closeBtn);
 
         frame.getContentPane().add(panel);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.setPreferredSize((new Dimension(480,250)));
+        frame.setPreferredSize((new Dimension(320,300)));
         frame.pack();
         frame.setLocationRelativeTo(null);
-        frame.setAlwaysOnTop(true);
+        //frame.setAlwaysOnTop(true);
 
+    }
+
+    @Override
+    public void show() {
+        listModel.clear();
+        startTimePicker.clear();
+        endTimePicker.clear();
+        startTime.setText(startTimePicker.getTime());
+        endTime.setText(endTimePicker.getTime());
+        startDate.setDate(new Date());
+        endDate.setDate(new Date(new Date().getTime() + 24*60*60));
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
     }
 
     /**
@@ -108,6 +197,9 @@ public class CalendarSwingView extends SwingTaskView {
     public void setList(SortedMap<Date, Set<Task>> calendar) {
         listModel.clear();
         SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        if(calendar.isEmpty())
+            JOptionPane.showMessageDialog(null, "There is no tasks for this period of time!",
+                    "Info", JOptionPane.INFORMATION_MESSAGE);
         for (SortedMap.Entry<Date, Set<Task>> item: calendar.entrySet()) {
             listModel.addElement(smp.format(item.getKey()) + ": " + getTasks(item.getValue()));
         }
@@ -138,5 +230,8 @@ public class CalendarSwingView extends SwingTaskView {
 
     private final DefaultListModel listModel = new DefaultListModel();
     private JList list;
-    private JSpinner endTime, startTime;
+    private JDateChooser endDate, startDate;
+    private JTextField startTime, endTime;
+    private TimePicker startTimePicker, endTimePicker;
+    private JButton timeStartPickerBtn, timeEndPickerBtn;
 }

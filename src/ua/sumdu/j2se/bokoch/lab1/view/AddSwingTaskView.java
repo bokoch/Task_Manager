@@ -27,6 +27,9 @@ public class AddSwingTaskView extends SwingTaskView {
         super(model);
     }
 
+    /**
+     * Создаем фабрику для производства таких видов
+     */
     public static TaskViewFactory getFactory() {
         return new TaskViewFactory() {
             @Override
@@ -36,9 +39,6 @@ public class AddSwingTaskView extends SwingTaskView {
         };
     }
 
-    /**
-     * Создает окно
-     */
     @Override
     public void createFrame() {
         frame = new JFrame(FRAME_TITLE);
@@ -243,6 +243,9 @@ public class AddSwingTaskView extends SwingTaskView {
         frame.setAlwaysOnTop(true);
     }
 
+    /**
+     * Установить видимость элементов, которые используются для разных типов задач
+     */
     public void setVisible(boolean flag) {
         endDate.setVisible(flag);
         endTime.setVisible(flag);
@@ -277,7 +280,7 @@ public class AddSwingTaskView extends SwingTaskView {
             try {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
             } catch (ParseException e) {
-                e.printStackTrace();
+                viewLogger.error(e.getMessage());
             }
             tmpTask = new Task(titleTask.getText(), start);
         }
@@ -286,7 +289,7 @@ public class AddSwingTaskView extends SwingTaskView {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
                 end = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
             } catch (ParseException e) {
-                e.printStackTrace();
+                viewLogger.error(e.getMessage());
             }
             interval = (int) spinDay.getValue()*86400 + (int) spinHr.getValue()*3600 + (int) spinMin.getValue()*60 +
                     (int) spinSec.getValue();
@@ -296,9 +299,6 @@ public class AddSwingTaskView extends SwingTaskView {
         return tmpTask;
     }
 
-    /**
-     * Задать окно "Add task" видимым
-     */
     @Override
     public void show() {
         clear();
@@ -310,9 +310,6 @@ public class AddSwingTaskView extends SwingTaskView {
         });
     }
 
-    /**
-     * Очистить значения полей
-     */
     public void clear() {
         startTimePicker.clear();
         endTimePicker.clear();

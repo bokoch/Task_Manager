@@ -38,6 +38,9 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
         update(null, null);
     }
 
+    /**
+     * Создаем фабрику для производства таких видов
+     */
     public static TaskViewFactory getFactory() {
         return new TaskViewFactory() {
             @Override
@@ -129,6 +132,20 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
     }
 
     @Override
+    public void show() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
+    }
+
+    /**
+     * Возвращает выбраную из списка задачу
+     * Если задача в списке не выбрана выбрасывает исключение
+     */
+    @Override
     public Task getTask() throws ParseException {
         if(list.isSelectionEmpty())
             throw new RuntimeException("Choose task!");
@@ -202,6 +219,9 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
         return res;
     }
 
+    /**
+     * Представляет массив задач, как массив строк с описанием задач
+     */
     private ArrayList<String> showStringList(TaskList tasks) {
         ArrayList<String> strTasks = new ArrayList<>();
 

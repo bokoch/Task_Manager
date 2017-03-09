@@ -20,37 +20,12 @@ public interface TaskView {
     String ACTION_DEL = "delete";
     String ACTION_CLOSE = "close";
 
-    /**
-     * Добавить слушателя
-     * @param al
-     */
     void addActionListener(ActionListener al);
-
-    /**
-     * Удалить слушателя
-     * @param al
-     */
     void removeActionListener(ActionListener al);
 
-    /**
-     * Возвратить задачу
-     * @throws ParseException
-     */
     Task getTask() throws ParseException;
 
-    /**
-     * Открыть окно
-     */
     void show();
-
-    /**
-     * Вывод ошибок
-     * @param message
-     */
     void showError(String message);
-
-    /**
-     * Закрыть окно
-     */
     void close();
 }

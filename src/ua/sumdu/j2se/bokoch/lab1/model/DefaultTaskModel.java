@@ -19,10 +19,6 @@ public class DefaultTaskModel extends Observable implements TaskModel {
          this.tList = tList;
     }
 
-    /**
-     * Добавить задачу
-     * @param task
-     */
     @Override
     public void addTask(Task task) {
         tList.add(task);
@@ -30,10 +26,6 @@ public class DefaultTaskModel extends Observable implements TaskModel {
         notifyObservers();
     }
 
-    /**
-     * Удалить задачу
-     * @param task
-     */
     @Override
     public void removeTask(Task task) {
         tList.remove(task);
@@ -41,11 +33,6 @@ public class DefaultTaskModel extends Observable implements TaskModel {
         notifyObservers();
     }
 
-    /**
-     * Изменить задачу
-     * @param oldTask
-     * @param newTask
-     */
     @Override
     public void changeTask(Task oldTask, Task newTask) {
         for (Task task: tList) {
@@ -63,8 +50,7 @@ public class DefaultTaskModel extends Observable implements TaskModel {
     }
 
     /**
-     * Задать выбранную задачу
-     * @param task
+     * Задать выбранную из списка задачу
      */
     @Override
     public void setSelTask(Task task) {
@@ -73,7 +59,6 @@ public class DefaultTaskModel extends Observable implements TaskModel {
 
     /**
      * Возвратить выбранную задачу
-     * @return
      */
     @Override
     public Task getSelTask() {
@@ -93,18 +78,12 @@ public class DefaultTaskModel extends Observable implements TaskModel {
 
     /**
      * Возвращает календарь задач за указанный промежуток времени
-     * @param from
-     * @param to
      */
     @Override
     public SortedMap<Date, Set<Task>> getCalendarMap(Date from, Date to) {
         return Tasks.calendar(tList, from, to);
     }
 
-    /**
-     * Возвращает наблюдаемый обьект
-     * @return
-     */
     @Override
     public Observable observable() {
         return this;

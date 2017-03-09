@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.apache.log4j.*;
@@ -29,6 +28,9 @@ public class TaskController implements ActionListener {
     String MainSwingTaskName = MainSwingTaskView.class.getName();
     private static final Logger controllerLogger = LogManager.getLogger(TaskController.class);
 
+    /**
+     * Создаем контроллер для модели и виды для нее
+     */
     public static void main(String[] args) {
         controllerLogger.info("Запуск программы");
         TaskList arr = new ArrayTaskList();
@@ -52,6 +54,9 @@ public class TaskController implements ActionListener {
         this.model = model;
     }
 
+    /**
+     * Обрабатываем события от вида
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
         TaskView view = (TaskView) event.getSource();
@@ -156,6 +161,9 @@ public class TaskController implements ActionListener {
         }
     }
 
+    /**
+     * Сохдаем вид используя фабрику
+     */
     public void createView(TaskViewFactory factory) {
         TaskView view = factory.createView(model);
         viewsMap.put(view.getClass().getName(), view);

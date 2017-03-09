@@ -26,6 +26,9 @@ public class DescribeSwingTask extends SwingTaskView {
         super(model);
     }
 
+    /**
+     * Создаем фабрику для производства таких видов
+     */
     public static TaskViewFactory getFactory() {
         return new TaskViewFactory() {
             @Override
@@ -35,9 +38,6 @@ public class DescribeSwingTask extends SwingTaskView {
         };
     }
 
-    /**
-     * Создает окно
-     */
     @Override
     public void createFrame() {
         frame = new JFrame(FRAME_TITLE);
@@ -131,7 +131,7 @@ public class DescribeSwingTask extends SwingTaskView {
     }
 
     /**
-     * Заполнить текстовые поля при открытии окна
+     * Заполнить текстовые поля, параметрами выбранной задачи, при открытии окна
      */
     private void fillFrame() {
         titleTask.setText(model.getSelTask().getTitle());
@@ -182,8 +182,6 @@ public class DescribeSwingTask extends SwingTaskView {
 
     /**
      * Форматировать вывод интервала, для текстового поля
-     * @param task
-     * @return formatInterval
      */
     private String formatInterval(Task task) {
         String formatInterval = "";
@@ -215,9 +213,6 @@ public class DescribeSwingTask extends SwingTaskView {
         return formatInterval;
     }
 
-    /**
-     * Открыть окно
-     */
     @Override
     public void show() {
         fillFrame();
@@ -230,9 +225,8 @@ public class DescribeSwingTask extends SwingTaskView {
     }
 
     /**
-     * Возвращает обьект типа Task
-     * @return tmpTask
-     * @throws ParseException
+     * Возвращает задачу
+     * Параметр active для задачи является редактируемым
      */
     @Override
     public Task getTask() throws ParseException {
@@ -270,9 +264,6 @@ public class DescribeSwingTask extends SwingTaskView {
 
     /**
      * Возвращет численное значение интервала из строки
-     * @param str
-     * @param m
-     * @return res
      */
     private int parseInterval(String str, Matcher m) {
         int res = 0;

@@ -31,6 +31,9 @@ public class CalendarSwingView extends SwingTaskView {
         super(model);
     }
 
+    /**
+     * Создаем фабрику для производства таких видов
+     */
     public static TaskViewFactory getFactory() {
         return new TaskViewFactory() {
             @Override
@@ -40,9 +43,6 @@ public class CalendarSwingView extends SwingTaskView {
         };
     }
 
-    /**
-     * Создать окно
-     */
     @Override
     public void createFrame() {
         frame = new JFrame(FRAME_TITLE);
@@ -145,8 +145,8 @@ public class CalendarSwingView extends SwingTaskView {
                 try {
                     dateFrom = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
                     dateTo = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
-                } catch (ParseException e1) {
-                    viewLogger.error(e1.getMessage());
+                } catch (ParseException ex) {
+                    viewLogger.error(ex.getMessage());
                 }
                 setList(model.getCalendarMap(dateFrom, dateTo));
             }
@@ -169,8 +169,6 @@ public class CalendarSwingView extends SwingTaskView {
         frame.setPreferredSize((new Dimension(320,300)));
         frame.pack();
         frame.setLocationRelativeTo(null);
-        //frame.setAlwaysOnTop(true);
-
     }
 
     @Override
@@ -191,8 +189,7 @@ public class CalendarSwingView extends SwingTaskView {
     }
 
     /**
-     * Заполнить список
-     * @param calendar
+     * Заполнить список календарем задач
      */
     public void setList(SortedMap<Date, Set<Task>> calendar) {
         listModel.clear();
@@ -209,8 +206,6 @@ public class CalendarSwingView extends SwingTaskView {
 
     /**
      * Возвращает строку задач, что заданы в Set
-     * @param tasks
-     * @return str
      */
     public String getTasks(Set<Task> tasks) {
         String str = "";

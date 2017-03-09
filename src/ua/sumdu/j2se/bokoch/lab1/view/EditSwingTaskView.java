@@ -26,6 +26,9 @@ public class EditSwingTaskView extends SwingTaskView {
         super(model);
     }
 
+    /**
+     * Создаем фабрику для производства таких видов
+     */
     public static TaskViewFactory getFactory() {
         return new TaskViewFactory() {
             @Override
@@ -35,9 +38,6 @@ public class EditSwingTaskView extends SwingTaskView {
         };
     }
 
-    /**
-     * Создать окно
-     */
     @Override
     public void createFrame() {
         frame = new JFrame(FRAME_TITLE);
@@ -243,8 +243,7 @@ public class EditSwingTaskView extends SwingTaskView {
     }
 
     /**
-     * Задать параметр setVisible для компонентов, которые используются для различных типов задач
-     * @param flag
+     * Задать видимость для компонентов, которые используются для различных типов задач
      */
     public void setVisible(boolean flag) {
         endDate.setVisible(flag);
@@ -263,11 +262,11 @@ public class EditSwingTaskView extends SwingTaskView {
     }
 
     /**
-     * Возвращает задачу введенную пользователем
-     * @return
+     * Возвращает, отредактированную пользователем, задачу
+     * При неправильном формате даты, выбрасывает ParseException
      */
     @Override
-    public Task getTask() {
+    public Task getTask() throws ParseException {
 
         Task tmpTask = null;
         Date start = null;
@@ -282,7 +281,7 @@ public class EditSwingTaskView extends SwingTaskView {
             try {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
             } catch (ParseException e) {
-                e.printStackTrace();
+                viewLogger.error(e.getMessage());
             }
             tmpTask = new Task(titleTask.getText(), start);
         }
@@ -301,9 +300,6 @@ public class EditSwingTaskView extends SwingTaskView {
         return tmpTask;
     }
 
-    /**
-     * Открывает окно
-     */
     @Override
     public void show() {
         fillFrame();
@@ -316,7 +312,7 @@ public class EditSwingTaskView extends SwingTaskView {
     }
 
     /**
-     * Заполняет окно информацией о задаче при открытии
+     * Заполнить текстовые поля, параметрами выбранной задачи, при открытии окна
      */
     private void fillFrame() {
         titleTask.setText(model.getSelTask().getTitle());

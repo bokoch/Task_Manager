@@ -1,7 +1,6 @@
 package ua.sumdu.j2se.bokoch.lab1.view;
 
 import org.apache.log4j.LogManager;
-import ua.sumdu.j2se.bokoch.lab1.controller.TaskController;
 import ua.sumdu.j2se.bokoch.lab1.model.TaskModel;
 import ua.sumdu.j2se.bokoch.tasks.Task;
 
@@ -31,60 +30,34 @@ public abstract class SwingTaskView implements TaskView {
 
     /**
      * Создать окно
+     * Каждая реализация вида создает окно по своему
      */
     public abstract void createFrame();
 
     /**
-     * Возвращает задачу (для каждого класса по своему)
-     * @return Task
-     * @throws ParseException
+     * Возвращает задачу (для каждой реализации по своему)
      */
     public abstract Task getTask() throws ParseException;
 
-    /**
-     * Добавить слушателя
-     * @param al
-     */
     @Override
     public void addActionListener(ActionListener al) {
         listeners.add(al);
     }
 
-    /**
-     * Удалить слушателя
-     * @param al
-     */
     @Override
     public void removeActionListener(ActionListener al) {
         listeners.remove(al);
     }
 
-    /**
-     * Открыть окно
-     */
     @Override
-    public void show() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame.setVisible(true);
-            }
-        });
-    }
+    public abstract void show();
 
-    /**
-     * Закрыть окно
-     */
     @Override
     public void close() {
         frame.setVisible(false);
         frame.dispose();
     }
 
-    /**
-     * Вывод ошибок
-     * @param message
-     */
     @Override
     public void showError(String message) {
         JOptionPane.showMessageDialog(frame, message, "Error", JOptionPane.ERROR_MESSAGE);
@@ -92,7 +65,6 @@ public abstract class SwingTaskView implements TaskView {
 
     /**
      * Передать команду слушателю
-     * @param command
      */
     protected void fireAction(String command) {
         ActionEvent event = new ActionEvent(this,0, command);

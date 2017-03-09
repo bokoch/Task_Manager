@@ -146,7 +146,7 @@ public class CalendarSwingView extends SwingTaskView {
                     dateFrom = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
                     dateTo = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
                 } catch (ParseException e1) {
-                    e1.printStackTrace();
+                    viewLogger.error(e1.getMessage());
                 }
                 setList(model.getCalendarMap(dateFrom, dateTo));
             }
@@ -197,9 +197,11 @@ public class CalendarSwingView extends SwingTaskView {
     public void setList(SortedMap<Date, Set<Task>> calendar) {
         listModel.clear();
         SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        if(calendar.isEmpty())
+        if(calendar.isEmpty()) {
             JOptionPane.showMessageDialog(null, "There is no tasks for this period of time!",
                     "Info", JOptionPane.INFORMATION_MESSAGE);
+            viewLogger.info("Для заданного промежутка времени задач нету");
+        }
         for (SortedMap.Entry<Date, Set<Task>> item: calendar.entrySet()) {
             listModel.addElement(smp.format(item.getKey()) + ": " + getTasks(item.getValue()));
         }

@@ -118,7 +118,6 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
         closeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 fireAction(ACTION_CLOSE);
-                System.exit(0);
             }
         });
 

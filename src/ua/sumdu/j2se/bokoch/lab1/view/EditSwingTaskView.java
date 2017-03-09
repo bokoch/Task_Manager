@@ -291,7 +291,7 @@ public class EditSwingTaskView extends SwingTaskView {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
                 end = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
             } catch (ParseException e) {
-                e.printStackTrace();
+                viewLogger.error(e.getMessage());
             }
             interval = (int) spinDay.getValue()*86400 + (int) spinHr.getValue()*3600 + (int) spinMin.getValue()*60 +
                     (int) spinSec.getValue();

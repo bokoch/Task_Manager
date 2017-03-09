@@ -1,5 +1,7 @@
 package ua.sumdu.j2se.bokoch.lab1.view;
 
+import org.apache.log4j.LogManager;
+import ua.sumdu.j2se.bokoch.lab1.controller.TaskController;
 import ua.sumdu.j2se.bokoch.lab1.model.TaskModel;
 import ua.sumdu.j2se.bokoch.tasks.Task;
 
@@ -14,6 +16,8 @@ import java.util.Iterator;
  * Абстракктный класс для видов
  */
 public abstract class SwingTaskView implements TaskView {
+    protected static final org.apache.log4j.Logger viewLogger = LogManager.getLogger(SwingTaskView.class);
+
     public SwingTaskView(TaskModel model) {
         this.model = model;
 

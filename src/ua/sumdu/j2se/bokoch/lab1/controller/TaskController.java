@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import org.apache.log4j.*;
 
 /**
  * Контроллер.
@@ -25,15 +26,19 @@ public class TaskController implements ActionListener {
     String CalendarSwingTaskName = CalendarSwingView.class.getName();
     String DescribeSwingTaskName = DescribeSwingTask.class.getName();
     String EditSwingTaskName = EditSwingTaskView.class.getName();
+    String MainSwingTaskName = MainSwingTaskView.class.getName();
+    private static final Logger controllerLogger = LogManager.getLogger(TaskController.class);
 
     public static void main(String[] args) {
+        controllerLogger.info("Запуск программы");
         TaskList arr = new ArrayTaskList();
         try {
             TaskIO.readText(arr, new File("d:\\text1.txt"));
+            controllerLogger.info("Задачи успешно считаны с файла");
         } catch (IOException e) {
-            e.printStackTrace();
+            controllerLogger.fatal(e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            controllerLogger.fatal(e.getMessage());
         }
         TaskController controller = new TaskController(new DefaultTaskModel(arr));
          controller.createView(MainSwingTaskView.getFactory());
@@ -52,16 +57,21 @@ public class TaskController implements ActionListener {
         TaskView view = (TaskView) event.getSource();
         if (event.getActionCommand().equals(view.ACTION_CLOSE)) {
             view.close();
-            try {
-                TaskIO.writeText(model.getList(), new File("d:\\text1.txt"));
-            } catch (IOException e) {}
-            views.remove(view);
-            if (views.size() == 0)
+            if(event.getSource().equals(viewsMap.get(MainSwingTaskName))) {
+                try {
+                    TaskIO.writeText(model.getList(), new File("d:\\text1.txt"));
+                    controllerLogger.info("Задачи успешно сохранены в файл");
+                } catch (IOException e) {
+                    controllerLogger.fatal(e.getMessage());
+                }
+                controllerLogger.info("Программа завершена");
                 System.exit(0);
+            }
         }
         //Открываем окно добавления задачи
         if (event.getActionCommand().equals(TaskView.ACTION_SHOW_ADD)) {
             viewsMap.get(AddSwingTaskName).show();
+            controllerLogger.info("Открыть окно добавления задачи");
         }
         //Сохраняем выбранную задачу и передаем в окно редактирования задачи
         //Открываем окно редактирования задачи
@@ -69,8 +79,10 @@ public class TaskController implements ActionListener {
             try {
                 model.setSelTask(view.getTask());
                 viewsMap.get(EditSwingTaskName).show();
+                controllerLogger.info("Открыть окно редактирования задачи");
             } catch (Exception e) {
                 view.showError(e.getMessage());
+                controllerLogger.warn(e.getMessage());
             }
         }
 
@@ -80,25 +92,29 @@ public class TaskController implements ActionListener {
             try {
                 model.setSelTask(view.getTask());
                 viewsMap.get(DescribeSwingTaskName).show();
+                controllerLogger.info("Открыть окно описания задачи");
             } catch (Exception e) {
                 view.showError(e.getMessage());
+                controllerLogger.warn(e.getMessage());
             }
         }
 
         //Открываем окно календаря задач
         if (event.getActionCommand().equals(TaskView.ACTION_SHOW_CALENDAR)) {
-
             viewsMap.get(CalendarSwingTaskName).show();
+            controllerLogger.info("Открыть окно календаря задач");
         }
 
         if (event.getActionCommand().equals(TaskView.ACTION_ADD)) {
             try {
                 //Обновляем модель
                 model.addTask(view.getTask());
+                controllerLogger.info("Добавлена задача");
                 view.close();
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
+                controllerLogger.error(e.getMessage());
             }
         }
 
@@ -106,10 +122,12 @@ public class TaskController implements ActionListener {
             try {
                 //Обновляем модель
                 model.changeTask(model.getSelTask(), view.getTask());
+                controllerLogger.info("Задача изменена");
                 view.close();
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
+                controllerLogger.error(e.getMessage());
             }
         }
 
@@ -121,6 +139,7 @@ public class TaskController implements ActionListener {
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
+                controllerLogger.error(e.getMessage());
             }
         }
 
@@ -128,9 +147,11 @@ public class TaskController implements ActionListener {
             try {
                 //Обновляем модель
                 model.removeTask(view.getTask());
+                controllerLogger.info("Задача удалена");
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
+                controllerLogger.warn(e.getMessage());
             }
         }
     }
@@ -138,11 +159,9 @@ public class TaskController implements ActionListener {
     public void createView(TaskViewFactory factory) {
         TaskView view = factory.createView(model);
         viewsMap.put(view.getClass().getName(), view);
-        views.add(view);
         view.addActionListener(this);
     }
 
     TaskModel model;
-    ArrayList views = new ArrayList();
     SortedMap<String, TaskView> viewsMap = new TreeMap<>();
 }

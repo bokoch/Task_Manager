@@ -4,6 +4,7 @@ import ua.sumdu.j2se.bokoch.lab1.model.DefaultTaskModel;
 import ua.sumdu.j2se.bokoch.lab1.model.TaskModel;
 import ua.sumdu.j2se.bokoch.lab1.view.*;
 import ua.sumdu.j2se.bokoch.tasks.ArrayTaskList;
+import ua.sumdu.j2se.bokoch.tasks.Task;
 import ua.sumdu.j2se.bokoch.tasks.TaskIO;
 import ua.sumdu.j2se.bokoch.tasks.TaskList;
 
@@ -28,22 +29,25 @@ public class TaskController implements ActionListener {
     String MainSwingTaskName = MainSwingTaskView.class.getName();
     private static final Logger controllerLogger = LogManager.getLogger(TaskController.class);
 
+    public static String filePath = "d:\\text1.txt";
     /**
      * Создаем контроллер для модели и виды для нее
      */
     public static void main(String[] args) {
-        controllerLogger.info("Запуск программы");
+        controllerLogger.info("Start program");
         TaskList arr = new ArrayTaskList();
         try {
-            TaskIO.readText(arr, new File("d:\\text1.txt"));
-            controllerLogger.info("Задачи успешно считаны с файла");
+            TaskIO.readText(arr, new File(filePath));
+            controllerLogger.info("Tasks are successfully read from file: \"" + filePath + "\"");
         } catch (IOException e) {
-            controllerLogger.fatal(e.getMessage());
+            controllerLogger.error("IOException: ", e);
         } catch (ParseException e) {
-            controllerLogger.fatal(e.getMessage());
+            controllerLogger.error("Parse Exception: ", e);
+        } catch (RuntimeException e) {
+            controllerLogger.error("Task parse exception",e);
         }
         TaskController controller = new TaskController(new DefaultTaskModel(arr));
-         controller.createView(MainSwingTaskView.getFactory());
+        controller.createView(MainSwingTaskView.getFactory());
         controller.createView(AddSwingTaskView.getFactory());
         controller.createView(EditSwingTaskView.getFactory());
         controller.createView(DescribeSwingTask.getFactory());
@@ -64,19 +68,19 @@ public class TaskController implements ActionListener {
             view.close();
             if(event.getSource().equals(viewsMap.get(MainSwingTaskName))) {
                 try {
-                    TaskIO.writeText(model.getList(), new File("d:\\text1.txt"));
-                    controllerLogger.info("Задачи успешно сохранены в файл");
+                    TaskIO.writeText(model.getList(), new File(filePath));
+                    controllerLogger.info("Tasks are successfully saved to file: \"" + filePath + "\"");
                 } catch (IOException e) {
-                    controllerLogger.fatal(e.getMessage());
+                    controllerLogger.error("IOException: ", e);
                 }
-                controllerLogger.info("Программа завершена");
+                controllerLogger.info("Program closed");
                 System.exit(0);
             }
         }
         //Открываем окно добавления задачи
         if (event.getActionCommand().equals(TaskView.ACTION_SHOW_ADD)) {
             viewsMap.get(AddSwingTaskName).show();
-            controllerLogger.info("Открыть окно добавления задачи");
+            controllerLogger.info("Open \"Add Task\" window");
         }
         //Сохраняем выбранную задачу и передаем в окно редактирования задачи
         //Открываем окно редактирования задачи
@@ -84,10 +88,10 @@ public class TaskController implements ActionListener {
             try {
                 model.setSelTask(view.getTask());
                 viewsMap.get(EditSwingTaskName).show();
-                controllerLogger.info("Открыть окно редактирования задачи");
+                controllerLogger.info("Open \"Edit Task\" window");
             } catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.warn(e.getMessage());
+                controllerLogger.warn(e);
             }
         }
 
@@ -97,42 +101,44 @@ public class TaskController implements ActionListener {
             try {
                 model.setSelTask(view.getTask());
                 viewsMap.get(DescribeSwingTaskName).show();
-                controllerLogger.info("Открыть окно описания задачи");
+                controllerLogger.info("Open \"Describe Task\" window");
             } catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.warn(e.getMessage());
+                controllerLogger.warn(e);
             }
         }
 
         //Открываем окно календаря задач
         if (event.getActionCommand().equals(TaskView.ACTION_SHOW_CALENDAR)) {
             viewsMap.get(CalendarSwingTaskName).show();
-            controllerLogger.info("Открыть окно календаря задач");
+            controllerLogger.info("Open \"Calendar of tasks\" window");
         }
 
         if (event.getActionCommand().equals(TaskView.ACTION_ADD)) {
             try {
                 //Обновляем модель
-                model.addTask(view.getTask());
-                controllerLogger.info("Добавлена задача");
+                Task tmpTask;
+                model.addTask(tmpTask = view.getTask());
+                controllerLogger.info("\"" + tmpTask + "\" is edited");
                 view.close();
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.error(e.getMessage());
+                controllerLogger.error("Bad task", e);
             }
         }
 
         if (event.getActionCommand().equals(TaskView.ACTION_EDIT)) {
             try {
                 //Обновляем модель
-                model.changeTask(model.getSelTask(), view.getTask());
-                controllerLogger.info("Задача изменена");
+                Task tmpTask;
+                model.changeTask(model.getSelTask(), tmpTask = view.getTask());
+                controllerLogger.info("\"" + tmpTask + "\" is edited");
                 view.close();
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.error(e.getMessage());
+                controllerLogger.error("Bad task", e);
             }
         }
 
@@ -144,19 +150,20 @@ public class TaskController implements ActionListener {
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.error(e.getMessage());
+                controllerLogger.error("Bad task", e);
             }
         }
 
         if (event.getActionCommand().equals(TaskView.ACTION_DEL)) {
             try {
                 //Обновляем модель
-                model.removeTask(view.getTask());
-                controllerLogger.info("Задача удалена");
+                Task tmpTask;
+                model.removeTask(tmpTask = view.getTask());
+                controllerLogger.info("\"" + tmpTask + "\" is deleted");
             }
             catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.warn(e.getMessage());
+                controllerLogger.warn("Choose task", e);
             }
         }
     }

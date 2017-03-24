@@ -37,7 +37,7 @@ public abstract class SwingTaskView implements TaskView {
     /**
      * Возвращает задачу (для каждой реализации по своему)
      */
-    public abstract Task getTask() throws ParseException;
+    public abstract Task getTask();
 
     @Override
     public void addActionListener(ActionListener al) {

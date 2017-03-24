@@ -229,34 +229,38 @@ public class DescribeSwingTask extends SwingTaskView {
      * Параметр active для задачи является редактируемым
      */
     @Override
-    public Task getTask() throws ParseException {
-        Task tmpTask;
+    public Task getTask() {
+        Task tmpTask = null;
 
         Date start;
         Date end;
         int interval;
         SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-        if(!repeatFlag) {
-            start = smp.parse(startTime.getText());
-            tmpTask = new Task(titleTask.getText(), start);
-        }
-        else {
-            start = smp.parse(startTime.getText());;
-            end = smp.parse(endTime.getText());
-            String repeat = intervalTask.getText();
+        try {
+            if(!repeatFlag) {
+                start = smp.parse(startTime.getText());
+                tmpTask = new Task(titleTask.getText(), start);
+            }
+            else {
+                start = smp.parse(startTime.getText());;
+                end = smp.parse(endTime.getText());
+                String repeat = intervalTask.getText();
 
-            Matcher mDay = Pattern.compile("\\d+.day").matcher(repeat);
-            int dayI = parseInterval(repeat, mDay);
-            Matcher mHr = Pattern.compile("\\d+.hour").matcher(repeat);
-            int hrI = parseInterval(repeat, mHr);
-            Matcher mMin = Pattern.compile("\\d+.minute").matcher(repeat);
-            int minI = parseInterval(repeat, mMin);
-            Matcher mSec = Pattern.compile("\\d+.second").matcher(repeat);
-            int secI = parseInterval(repeat, mSec);
-            interval = dayI * 86400 + hrI * 3600 + minI * 60 + secI;
+                Matcher mDay = Pattern.compile("\\d+.day").matcher(repeat);
+                int dayI = parseInterval(repeat, mDay);
+                Matcher mHr = Pattern.compile("\\d+.hour").matcher(repeat);
+                int hrI = parseInterval(repeat, mHr);
+                Matcher mMin = Pattern.compile("\\d+.minute").matcher(repeat);
+                int minI = parseInterval(repeat, mMin);
+                Matcher mSec = Pattern.compile("\\d+.second").matcher(repeat);
+                int secI = parseInterval(repeat, mSec);
+                interval = dayI * 86400 + hrI * 3600 + minI * 60 + secI;
 
-            tmpTask = new Task(titleTask.getText(), (Date) start.clone(), (Date) end.clone(), interval);
+                tmpTask = new Task(titleTask.getText(), (Date) start.clone(), (Date) end.clone(), interval);
+            }
+        } catch (ParseException e) {
+            viewLogger.error("Parse Exception", e);
         }
         tmpTask.setActive(chkActive.isSelected());
         return tmpTask;

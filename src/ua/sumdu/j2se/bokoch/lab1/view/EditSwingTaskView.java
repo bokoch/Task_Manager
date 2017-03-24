@@ -266,7 +266,7 @@ public class EditSwingTaskView extends SwingTaskView {
      * При неправильном формате даты, выбрасывает ParseException
      */
     @Override
-    public Task getTask() throws ParseException {
+    public Task getTask() {
 
         Task tmpTask = null;
         Date start = null;
@@ -281,7 +281,7 @@ public class EditSwingTaskView extends SwingTaskView {
             try {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
             } catch (ParseException e) {
-                viewLogger.error(e.getMessage());
+                viewLogger.error("Parse Exception", e);
             }
             tmpTask = new Task(titleTask.getText(), start);
         }
@@ -290,7 +290,7 @@ public class EditSwingTaskView extends SwingTaskView {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());
                 end = smp.parse(((JTextField) endDate.getDateEditor()).getText() + " " + endTime.getText());
             } catch (ParseException e) {
-                viewLogger.error(e.getMessage());
+                viewLogger.error("Parse Exception", e);
             }
             interval = (int) spinDay.getValue()*86400 + (int) spinHr.getValue()*3600 + (int) spinMin.getValue()*60 +
                     (int) spinSec.getValue();

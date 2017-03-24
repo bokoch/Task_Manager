@@ -146,10 +146,15 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
      * Если задача в списке не выбрана выбрасывает исключение
      */
     @Override
-    public Task getTask() throws ParseException {
+    public Task getTask() {
         if(list.isSelectionEmpty())
             throw new RuntimeException("Choose task!");
-        Task tmpTask = parseStrTask((String) list.getSelectedValue());
+        Task tmpTask = null;
+        try {
+            tmpTask = parseStrTask((String) list.getSelectedValue());
+        } catch (ParseException e) {
+            viewLogger.error("Parse Exception: ", e);
+        }
         return tmpTask;
     }
 

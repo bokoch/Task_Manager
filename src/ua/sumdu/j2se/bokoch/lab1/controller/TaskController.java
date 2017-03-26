@@ -117,9 +117,8 @@ public class TaskController implements ActionListener {
         if (event.getActionCommand().equals(TaskView.ACTION_ADD)) {
             try {
                 //Обновляем модель
-                Task tmpTask;
-                model.addTask(tmpTask = view.getTask());
-                controllerLogger.info("[" + tmpTask + "] is added");
+                model.addTask(view.getTask());
+                controllerLogger.info("[" + view.getTask() + "] is added");
                 view.close();
             }
             catch (Exception e) {

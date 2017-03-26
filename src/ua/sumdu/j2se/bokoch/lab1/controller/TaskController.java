@@ -91,7 +91,7 @@ public class TaskController implements ActionListener {
                 controllerLogger.info("Open \"Edit Task\" window");
             } catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.warn(e);
+                controllerLogger.warn("Choose task", e);
             }
         }
 
@@ -104,7 +104,7 @@ public class TaskController implements ActionListener {
                 controllerLogger.info("Open \"Describe Task\" window");
             } catch (Exception e) {
                 view.showError(e.getMessage());
-                controllerLogger.warn(e);
+                controllerLogger.warn("Choose task", e);
             }
         }
 
@@ -119,7 +119,7 @@ public class TaskController implements ActionListener {
                 //Обновляем модель
                 Task tmpTask;
                 model.addTask(tmpTask = view.getTask());
-                controllerLogger.info("\"" + tmpTask + "\" is edited");
+                controllerLogger.info("[" + tmpTask + "] is added");
                 view.close();
             }
             catch (Exception e) {
@@ -131,9 +131,9 @@ public class TaskController implements ActionListener {
         if (event.getActionCommand().equals(TaskView.ACTION_EDIT)) {
             try {
                 //Обновляем модель
-                Task tmpTask;
-                model.changeTask(model.getSelTask(), tmpTask = view.getTask());
-                controllerLogger.info("\"" + tmpTask + "\" is edited");
+                model.changeTask(model.getSelTask(), view.getTask());
+                controllerLogger.info("Task is edited: \r\n\t[" + model.getSelTask() +
+                        "] changed to \r\n\t[" + view.getTask() + "]");
                 view.close();
             }
             catch (Exception e) {

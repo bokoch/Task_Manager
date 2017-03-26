@@ -274,9 +274,6 @@ public class EditSwingTaskView extends SwingTaskView {
         int interval;
         SimpleDateFormat smp = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-        if(titleTask.getText().isEmpty())
-            throw new RuntimeException("Title must be not null!");
-
         if(rbNoRep.isSelected()) {
             try {
                 start = smp.parse(((JTextField) startDate.getDateEditor()).getText() + " " + startTime.getText());

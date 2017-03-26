@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * Реализация главного вида, со списком всех задач
  */
 public class MainSwingTaskView extends SwingTaskView implements Observer {
-    final String FRAME_TITLE = "Main";
+    final String FRAME_TITLE = "Task Manager";
     final String ADD_BUTTON_TITLE = "Add";
     final String DEL_BUTTON_TITLE = "Remove";
     final String EDIT_BUTTON_TITLE = "Edit";
@@ -124,6 +124,14 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
             }
         });
 
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                fireAction(ACTION_CLOSE);
+            }
+        });
+        frame.setResizable(false);
+
         frame.setPreferredSize((new Dimension(560,300)));
         frame.getContentPane().add(panel);
         frame.pack();
@@ -148,7 +156,7 @@ public class MainSwingTaskView extends SwingTaskView implements Observer {
     @Override
     public Task getTask() {
         if(list.isSelectionEmpty())
-            throw new RuntimeException("Choose task!");
+            throw new RuntimeException("Task is not selected!");
         Task tmpTask = null;
         try {
             tmpTask = parseStrTask((String) list.getSelectedValue());
